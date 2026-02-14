@@ -9,6 +9,9 @@ import { ProductGrid } from "@/components/product-grid";
 import { products } from "@/lib/catalog";
 import { useCart } from "@/providers/cart-provider";
 import { useState } from "react";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { InfiniteReelCarousel } from "@/components/infinite-reel-carousel";
+import { InstagramFeed } from "@/components/instagram-feed";
 
 export default function HomePage() {
   const { addItem } = useCart();
@@ -154,6 +157,19 @@ export default function HomePage() {
 
       <ProductGrid title="Curated Prestige Pieces" />
 
+      <InfiniteReelCarousel />
+
+      <section className="py-20 border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="mb-12">
+            <p className="text-xs uppercase tracking-[0.2em] text-gold">Follow Us</p>
+            <h2 className="text-4xl md:text-5xl mt-3 mb-2">Our Latest on Instagram</h2>
+            <p className="text-silver/70">Connect with @bijoux_iyl for the latest jewelry designs and customer stories</p>
+          </div>
+          <InstagramFeed limit={6} username="bijoux_iyl" />
+        </div>
+      </section>
+
       <section className="py-16 border-t border-white/10">
         <div className="mx-auto max-w-7xl px-4 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
           <div>
@@ -165,6 +181,12 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      <WhatsAppButton 
+        phoneNumber="+212661234567"
+        message="Hello BIJOUX IYL! I'd like to know more about your jewelry collections."
+        showLabel={true}
+      />
 
       <script
         type="application/ld+json"

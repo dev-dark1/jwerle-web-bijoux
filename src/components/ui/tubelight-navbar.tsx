@@ -66,7 +66,7 @@ export function TubelightNavbar() {
             <button onClick={() => setSearchOpen(true)} aria-label="Search products">
               <Search className="w-5 h-5 text-white/80 hover:text-gold" />
             </button>
-            <Link href="/account" aria-label="Account">
+            <Link href="/admin" aria-label="Admin Panel" title="Admin Panel">
               <User className="w-5 h-5 text-white/80 hover:text-gold" />
             </Link>
             <button onClick={toggleCart} className="relative" aria-label="Open cart">
