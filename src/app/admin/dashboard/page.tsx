@@ -8,49 +8,30 @@ import { supabaseClient } from "@/lib/supabase"
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
-    visitors: 1240,
-    orders: 85,
-    revenue: 145200
+    ordersThisMonth: 0,
+    ordersGrowth: 0,
+    revenueThisMonth: 0,
+    revenueGrowth: 0,
+    totalProducts: 0,
+    lowStockProducts: 0,
+    pendingOrders: 0,
   })
-  const [topCities, setTopCities] = useState<{city: string, count: number}[]>([
-    { city: "Casablanca", count: 450 },
-    { city: "Rabat", count: 320 },
-    { city: "Marrakech", count: 210 },
-    { city: "Tiznit", count: 150 },
-    { city: "Agadir", count: 110 }
-  ])
+  const [recentOrders, setRecentOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true)
-        // Safely attempt to fetch visits
-        const { count: visitCount, error: countError } = await supabaseClient.from('analytics_visitors').select('*', { count: 'exact', head: true })
+        const response = await fetch('/api/admin/analytics')
+        const data = await response.json()
         
-        if (!countError && visitCount !== null) {
-             setStats(prev => ({ ...prev, visitors: visitCount }))
-        }
-
-        // Safely attempt to fetch cities
-        const { data: visits, error: visitsError } = await supabaseClient.from('analytics_visitors').select('city').limit(100)
-        
-        if (!visitsError && visits && visits.length > 0) {
-          const cityMap = new Map()
-          visits.forEach(v => {
-            if(v.city) cityMap.set(v.city, (cityMap.get(v.city) || 0) + 1)
-          })
-          
-          if (cityMap.size > 0) {
-             const cities = Array.from(cityMap.entries())
-               .map(([city, count]) => ({ city, count: Number(count) }))
-               .sort((a, b) => b.count - a.count)
-               .slice(0, 5)
-             setTopCities(cities)
-          }
+        if (response.ok) {
+          setStats(data.stats)
+          setRecentOrders(data.recentOrders)
         }
       } catch (err) {
-        console.warn("Dashboard data fetch failed, using fallback data", err)
+        console.error("[v0] Dashboard data fetch failed", err)
       } finally {
         setLoading(false)
       }
@@ -67,10 +48,11 @@ export default function AdminDashboard() {
         </div>
         
         <nav className="space-y-2 flex-1">
-          <NavItem icon={<BarChart />} label="Overview" active />
-          <NavItem icon={<Package />} label="Products" />
-          <NavItem icon={<Users />} label="Customers" />
-          <NavItem icon={<Settings />} label="Settings" />
+          <Link href="/admin/dashboard"><NavItem icon={<BarChart />} label="Overview" active /></Link>
+          <Link href="/admin/products"><NavItem icon={<Package />} label="Products" /></Link>
+          <Link href="/admin/orders"><NavItem icon={<TrendingUp />} label="Orders" /></Link>
+          <Link href="/admin/customers"><NavItem icon={<Users />} label="Customers" /></Link>
+          <Link href="/admin/settings"><NavItem icon={<Settings />} label="Settings" /></Link>
         </nav>
 
         <div className="pt-6 border-t border-white/5">
@@ -102,59 +84,57 @@ export default function AdminDashboard() {
         </header>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 relative z-10">
-           <StatCard icon={<DollarSign />} label="Total Revenue" value="145,200 DH" trend="+12%" color="gold" />
-           <StatCard icon={<Eye />} label="Site Visits" value={stats.visitors.toLocaleString()} trend="+5%" color="blue" />
-           <StatCard icon={<TrendingUp />} label="Active Orders" value="85" trend="+8%" color="green" />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 relative z-10">
+           <StatCard icon={<DollarSign />} label="Revenue This Month" value={`${stats.revenueThisMonth.toLocaleString()} MAD`} trend={`${stats.revenueGrowth > 0 ? '+' : ''}${stats.revenueGrowth}%`} color="gold" />
+           <StatCard icon={<TrendingUp />} label="Orders This Month" value={stats.ordersThisMonth.toString()} trend={`${stats.ordersGrowth > 0 ? '+' : ''}${stats.ordersGrowth}%`} color="blue" />
+           <StatCard icon={<Package />} label="Active Products" value={stats.totalProducts.toString()} trend={stats.lowStockProducts > 0 ? `${stats.lowStockProducts} low stock` : 'In Stock'} color="green" />
+           <StatCard icon={<Users />} label="Pending Orders" value={stats.pendingOrders.toString()} trend="Needs Action" color="blue" />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
-          {/* Visitor Map / Cities */}
+        <div className="grid grid-cols-1 gap-8 relative z-10">
+          {/* Recent Orders */}
           <div className="bg-black-soft border border-white/5 rounded-xl p-6 hover:border-gold/20 transition-colors">
             <div className="flex justify-between items-center mb-6">
-               <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                 <MapPin className="w-5 h-5 text-gold" /> Top Locations
-               </h3>
-               <span className="text-xs text-silver/50">Last 30 Days</span>
+              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <Package className="w-5 h-5 text-gold" /> Recent Orders
+              </h3>
+              <Link href="/admin/orders" className="text-sm text-gold hover:underline">
+                View All
+              </Link>
             </div>
             <div className="space-y-4">
-               {topCities.map((city, i) => (
-                 <div key={i} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                    <span className="text-silver">{city.city}</span>
-                    <div className="flex items-center gap-3">
-                      <div className="w-32 h-2 bg-black-bg rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-gold" 
-                          style={{ width: `${(city.count / (topCities[0]?.count || 1)) * 100}%` }} 
-                        />
+              {recentOrders.length > 0 ? (
+                recentOrders.map(order => (
+                  <Link key={order.id} href={`/admin/orders/${order.id}`}>
+                    <div className="flex items-center justify-between p-4 bg-black-bg/50 rounded-lg border border-white/5 group hover:border-gold/20 transition-all cursor-pointer">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-gradient-to-br from-white/10 to-transparent rounded-full flex items-center justify-center text-xs text-gold font-bold">
+                          {order.order_number.slice(-4)}
+                        </div>
+                        <div>
+                          <p className="text-white font-medium group-hover:text-gold transition-colors">{order.customer?.name || 'Guest'}</p>
+                          <p className="text-xs text-silver/50">{order.customer_email} • {new Date(order.created_at).toLocaleDateString()}</p>
+                        </div>
                       </div>
-                      <span className="text-white font-mono text-sm">{city.count}</span>
+                      <div className="flex items-center gap-4">
+                        <span className="text-white font-bold">{order.total} MAD</span>
+                        <span className={`text-xs px-2 py-1 rounded border ${
+                          order.status === 'pending' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' :
+                          order.status === 'processing' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                          order.status === 'shipped' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
+                          'bg-gold/10 text-gold border-gold/20'
+                        }`}>
+                          {order.status}
+                        </span>
+                      </div>
                     </div>
-                 </div>
-               ))}
-            </div>
-          </div>
-
-          {/* Recent Orders Placeholder */}
-          <div className="bg-black-soft border border-white/5 rounded-xl p-6 hover:border-gold/20 transition-colors">
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Package className="w-5 h-5 text-gold" /> Recent Activity
-            </h3>
-            <div className="space-y-4">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="flex items-center justify-between p-4 bg-black-bg/50 rounded-lg border border-white/5 group hover:border-gold/20 transition-all">
-                  <div className="flex items-center gap-4">
-                     <div className="w-10 h-10 bg-gradient-to-br from-white/10 to-transparent rounded-full flex items-center justify-center text-xs text-gold font-bold">
-                        #{1000 + i}
-                     </div>
-                     <div>
-                       <p className="text-white font-medium group-hover:text-gold transition-colors">New Order</p>
-                       <p className="text-xs text-silver/50">Casablanca • 2 mins ago</p>
-                     </div>
-                  </div>
-                  <span className="text-xs bg-gold/10 text-gold px-2 py-1 rounded border border-gold/20">Pending</span>
+                  </Link>
+                ))
+              ) : (
+                <div className="text-center py-8 text-silver/50">
+                  No recent orders
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
