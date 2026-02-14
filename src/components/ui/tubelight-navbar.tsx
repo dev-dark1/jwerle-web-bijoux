@@ -30,7 +30,7 @@ export function TubelightNavbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="bg-black text-[11px] uppercase tracking-[0.16em] text-gold border-b border-white/10 py-2 text-center">
-        Free Delivery in Morocco for orders over 500 MAD
+        Discover BIJOUX IYL - Free Delivery in Morocco for orders over 500 MAD
       </div>
 
       <div
@@ -59,7 +59,7 @@ export function TubelightNavbar() {
           </button>
 
           <Link href="/" className="font-serif text-xl md:text-2xl text-white tracking-[0.2em]">
-            YOURELEGANCE
+            BIJOUX IYL
           </Link>
 
           <div className="flex items-center gap-3 md:gap-4">

@@ -21,9 +21,9 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://my-web-orpin-three.vercel.app"),
-  title: "Yourelegance | Modern Royal Identity Jewelry",
+  title: "BIJOUX IYL | Modern Royal Identity Jewelry",
   description:
-    "Discover Yourelegance. Royal Moroccan heritage meets modern black and gold jewelry craftsmanship.",
+    "Discover BIJOUX IYL. Royal Moroccan heritage meets modern black and gold jewelry craftsmanship.",
 };
 
 export default function RootLayout({

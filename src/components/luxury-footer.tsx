@@ -7,7 +7,7 @@ export function LuxuryFooter() {
     <footer className="border-t border-white/10 bg-black py-14">
       <div className="mx-auto max-w-7xl px-4 grid grid-cols-1 md:grid-cols-4 gap-10">
         <div>
-          <h2 className="font-serif text-2xl tracking-[0.16em]">YOURELEGANCE</h2>
+          <h2 className="font-serif text-2xl tracking-[0.16em]">BIJOUX IYL</h2>
           <p className="text-white/70 text-sm mt-4">
             Modern Royal Identity Jewelry. Handcrafted in Tizirit, Morocco with architectural precision.
           </p>
@@ -32,7 +32,7 @@ export function LuxuryFooter() {
           <ul className="mt-4 space-y-3 text-sm text-white/75">
             <li className="flex gap-2"><MapPin className="w-4 h-4 text-gold mt-0.5" /> Tizirit, Morocco</li>
             <li className="flex gap-2"><Phone className="w-4 h-4 text-gold mt-0.5" /> +212 680 739 497</li>
-            <li className="flex gap-2"><Mail className="w-4 h-4 text-gold mt-0.5" /> contact@yourelegance.com</li>
+            <li className="flex gap-2"><Mail className="w-4 h-4 text-gold mt-0.5" /> contact@bijouxiyl.com</li>
           </ul>
           <a
             href="https://wa.me/212680739497"
@@ -63,7 +63,7 @@ export function LuxuryFooter() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 mt-10 pt-4 border-t border-white/10 text-xs text-white/55 flex flex-wrap gap-3 justify-between">
-        <span>© 2026 Yourelegance. All rights reserved.</span>
+        <span>© 2026 BIJOUX IYL. All rights reserved.</span>
         <div className="flex gap-3">
           <Link href="/terms" className="hover:text-gold">Terms</Link>
           <Link href="/privacy" className="hover:text-gold">Privacy</Link>
