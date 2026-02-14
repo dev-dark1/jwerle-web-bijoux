@@ -1,58 +1,74 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ShieldCheck, Gem, Truck, BadgeCheck } from "lucide-react";
 import type { ReactNode } from "react";
 import { ProductGrid } from "@/components/product-grid";
 import { products } from "@/lib/catalog";
 import { useCart } from "@/providers/cart-provider";
+import { useState } from "react";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { InfiniteReelCarousel } from "@/components/infinite-reel-carousel";
+import { InstagramFeed } from "@/components/instagram-feed";
 
 export default function HomePage() {
   const { addItem } = useCart();
   const bestSellers = products.slice(0, 4);
+  const [isHeroHovered, setIsHeroHovered] = useState(false);
 
   return (
     <div className="bg-black text-white">
-      <section className="min-h-[85vh] relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,0.2),transparent_42%),radial-gradient(circle_at_75%_30%,rgba(75,0,130,0.18),transparent_34%),linear-gradient(to_bottom,#000,#060606)]" />
-        <div className="relative mx-auto max-w-7xl px-4 py-24 md:py-32 grid md:grid-cols-2 gap-12 items-center">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <p className="text-xs tracking-[0.2em] uppercase text-gold">Discover Yourelegance</p>
-            <h1 className="text-5xl md:text-7xl leading-tight mt-4">
+      <section className="min-h-[90vh] relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="relative w-full h-full">
+            <Image
+              src="/images/hero-couple.webp"
+              alt="BIJOUX IYL Jewelry Collection"
+              fill
+              priority
+              className="object-cover object-center transition-opacity duration-700"
+              style={{ opacity: isHeroHovered ? 0 : 1 }}
+            />
+            <Image
+              src="/images/hero-hand.webp"
+              alt="BIJOUX IYL Jewelry Details"
+              fill
+              priority
+              className="object-cover object-center transition-opacity duration-700"
+              style={{ opacity: isHeroHovered ? 1 : 0 }}
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black" />
+        </div>
+        <div 
+          className="relative mx-auto max-w-7xl px-4 py-32 md:py-40 min-h-[90vh] flex flex-col justify-center"
+          onMouseEnter={() => setIsHeroHovered(true)}
+          onMouseLeave={() => setIsHeroHovered(false)}
+        >
+          <motion.div 
+            initial={{ opacity: 0, y: 24 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.7 }}
+            className="max-w-2xl"
+          >
+            <p className="text-xs tracking-[0.2em] uppercase text-gold">Discover BIJOUX IYL</p>
+            <h1 className="text-5xl md:text-7xl leading-tight mt-4 text-white drop-shadow-2xl">
               Every Royal Story
               <br />
               Begins With a Spark.
             </h1>
-            <p className="text-white/75 mt-6 max-w-xl">
+            <p className="text-white/90 mt-6 max-w-xl text-lg drop-shadow-lg">
               Royal Moroccan heritage in modern black and gold. Build identity jewelry designed for status, symbolism, and legacy.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/rapport-builder" className="gold-outline-btn px-6 py-3 uppercase tracking-[0.15em] text-xs">
+              <Link href="/rapport-builder" className="gold-outline-btn px-6 py-3 uppercase tracking-[0.15em] text-xs bg-black/40 backdrop-blur-sm">
                 Build Your Royal Rapport
               </Link>
-              <Link href="/collections" className="border border-white/20 px-6 py-3 uppercase tracking-[0.15em] text-xs hover:border-gold hover:text-gold">
+              <Link href="/collections" className="border border-white/60 px-6 py-3 uppercase tracking-[0.15em] text-xs hover:border-gold hover:text-gold bg-black/40 backdrop-blur-sm text-white">
                 Shop the Collection
               </Link>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.15 }}
-            className="royal-panel p-7 md:p-10"
-          >
-            <p className="text-gold uppercase tracking-[0.13em] text-xs">Signature Positioning</p>
-            <h2 className="text-3xl mt-3">Modern Royal Identity Jewelry</h2>
-            <p className="text-white/75 mt-4 text-sm">
-              Not mass luxury. Not accessible jewelry. A high-touch storytelling format designed for Moroccan and global buyers.
-            </p>
-            <div className="mt-7 grid grid-cols-2 gap-3 text-sm">
-              <Stat label="LCP Target" value="< 1.2s" />
-              <Stat label="Conversion Target" value="4-5%" />
-              <Stat label="AOV Growth" value="+20%" />
-              <Stat label="Abandonment Drop" value="-20pts" />
             </div>
           </motion.div>
         </div>
@@ -141,6 +157,19 @@ export default function HomePage() {
 
       <ProductGrid title="Curated Prestige Pieces" />
 
+      <InfiniteReelCarousel />
+
+      <section className="py-20 border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="mb-12">
+            <p className="text-xs uppercase tracking-[0.2em] text-gold">Follow Us</p>
+            <h2 className="text-4xl md:text-5xl mt-3 mb-2">Our Latest on Instagram</h2>
+            <p className="text-silver/70">Connect with @bijoux_iyl for the latest jewelry designs and customer stories</p>
+          </div>
+          <InstagramFeed limit={6} username="bijoux_iyl" />
+        </div>
+      </section>
+
       <section className="py-16 border-t border-white/10">
         <div className="mx-auto max-w-7xl px-4 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
           <div>
@@ -153,13 +182,19 @@ export default function HomePage() {
         </div>
       </section>
 
+      <WhatsAppButton 
+        phoneNumber="+212661234567"
+        message="Hello BIJOUX IYL! I'd like to know more about your jewelry collections."
+        showLabel={true}
+      />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "Yourelegance",
+            name: "BIJOUX IYL",
             description: "Modern Royal Identity Jewelry from Morocco.",
             url: "https://my-web-orpin-three.vercel.app/",
             areaServed: ["MA", "US", "FR"],

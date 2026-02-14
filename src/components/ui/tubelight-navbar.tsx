@@ -30,7 +30,7 @@ export function TubelightNavbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="bg-black text-[11px] uppercase tracking-[0.16em] text-gold border-b border-white/10 py-2 text-center">
-        Free Delivery in Morocco for orders over 500 MAD
+        Discover BIJOUX IYL - Free Delivery in Morocco for orders over 500 MAD
       </div>
 
       <div
@@ -59,14 +59,14 @@ export function TubelightNavbar() {
           </button>
 
           <Link href="/" className="font-serif text-xl md:text-2xl text-white tracking-[0.2em]">
-            YOURELEGANCE
+            BIJOUX IYL
           </Link>
 
           <div className="flex items-center gap-3 md:gap-4">
             <button onClick={() => setSearchOpen(true)} aria-label="Search products">
               <Search className="w-5 h-5 text-white/80 hover:text-gold" />
             </button>
-            <Link href="/account" aria-label="Account">
+            <Link href="/admin" aria-label="Admin Panel" title="Admin Panel">
               <User className="w-5 h-5 text-white/80 hover:text-gold" />
             </Link>
             <button onClick={toggleCart} className="relative" aria-label="Open cart">
