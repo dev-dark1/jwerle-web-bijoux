@@ -153,7 +153,7 @@ function generatePlaceholderPosts(): InstagramPost[] {
   return Array.from({ length: 6 }).map((_, i) => ({
     id: `placeholder-${i}`,
     media_type: 'IMAGE',
-    media_url: `https://images.unsplash.com/photo-${1550512${i}}-?w=500&h=500&fit=crop`,
+    media_url: `https://images.unsplash.com/photo-${1550512 + i}-?w=500&h=500&fit=crop`,
     caption: 'BIJOUX IYL - Luxury Moroccan Jewelry',
     permalink: 'https://instagram.com/bijoux_iyl',
     like_count: Math.floor(Math.random() * 500) + 100,
