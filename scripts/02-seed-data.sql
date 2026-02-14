@@ -10,7 +10,7 @@
 INSERT INTO admins (email, password_hash, role, is_active)
 VALUES (
   'rabaailyass2004@gmail.com',
-  '$2a$10$YourHashedPasswordHere', -- This will be replaced by actual hash
+  '$2b$10$sfgSDw.N7yPfRpKB1wTJret0jpk5as1KB9AmpRGPj6grw6rlpne36',
   'super_admin',
   true
 )
