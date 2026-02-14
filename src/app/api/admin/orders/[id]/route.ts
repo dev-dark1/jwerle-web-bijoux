@@ -7,8 +7,9 @@ export const dynamic = "force-dynamic";
 // GET /api/admin/orders/[id] - Get single order with full details
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const sessionResult = await verifyAdminSession(request);
     if (!sessionResult.success) {
@@ -22,7 +23,7 @@ export async function GET(
         customer:customers(*),
         items:order_items(*)
       `)
-      .eq("id", params.id)
+      .eq("id", id)
       .single();
 
     if (error || !order) {
@@ -39,8 +40,9 @@ export async function GET(
 // PATCH /api/admin/orders/[id] - Update order (mainly status)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const sessionResult = await verifyAdminSession(request);
     if (!sessionResult.success) {
@@ -59,7 +61,7 @@ export async function PATCH(
         ...(notes && { notes }),
         updated_at: new Date().toISOString(),
       })
-      .eq("id", params.id)
+      .eq("id", id)
       .select()
       .single();
 
@@ -73,7 +75,7 @@ export async function PATCH(
       admin_id: sessionResult.admin.id,
       action: "order.update",
       resource_type: "order",
-      resource_id: params.id,
+      resource_id: id,
       details: { changes: body },
       ip_address: request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip"),
     });

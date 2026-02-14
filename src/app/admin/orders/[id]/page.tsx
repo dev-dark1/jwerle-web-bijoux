@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Save, Package, User, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -39,9 +39,8 @@ interface Order {
 
 export default function OrderDetailPage() {
   const router = useRouter();
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const id = pathname.split('/').pop() || '';
-  const router = useRouter();
+  const params = useParams();
+  const id = (params.id as string) || '';
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);

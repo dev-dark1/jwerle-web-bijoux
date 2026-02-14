@@ -7,8 +7,9 @@ export const dynamic = "force-dynamic";
 // GET /api/admin/products/[id] - Get single product
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const sessionResult = await verifyAdminSession(request);
     if (!sessionResult.success) {
@@ -18,7 +19,7 @@ export async function GET(
     const { data: product, error } = await supabaseAdmin
       .from("products")
       .select("*")
-      .eq("id", params.id)
+      .eq("id", id)
       .single();
 
     if (error || !product) {
@@ -35,8 +36,9 @@ export async function GET(
 // PATCH /api/admin/products/[id] - Update product
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const sessionResult = await verifyAdminSession(request);
     if (!sessionResult.success) {
@@ -51,7 +53,7 @@ export async function PATCH(
         .from("products")
         .select("id")
         .eq("slug", body.slug)
-        .neq("id", params.id)
+        .neq("id", id)
         .single();
 
       if (existing) {
@@ -69,7 +71,7 @@ export async function PATCH(
         ...body,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", params.id)
+      .eq("id", id)
       .select()
       .single();
 
@@ -83,7 +85,7 @@ export async function PATCH(
       admin_id: sessionResult.admin.id,
       action: "product.update",
       resource_type: "product",
-      resource_id: params.id,
+      resource_id: id,
       details: { changes: body },
       ip_address: request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip"),
     });
@@ -98,8 +100,9 @@ export async function PATCH(
 // DELETE /api/admin/products/[id] - Delete product
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const sessionResult = await verifyAdminSession(request);
     if (!sessionResult.success) {
@@ -110,14 +113,14 @@ export async function DELETE(
     const { data: product } = await supabaseAdmin
       .from("products")
       .select("name")
-      .eq("id", params.id)
+      .eq("id", id)
       .single();
 
     // Delete product
     const { error } = await supabaseAdmin
       .from("products")
       .delete()
-      .eq("id", params.id);
+      .eq("id", id);
 
     if (error) {
       console.error("[v0] Error deleting product:", error);
@@ -129,7 +132,7 @@ export async function DELETE(
       admin_id: sessionResult.admin.id,
       action: "product.delete",
       resource_type: "product",
-      resource_id: params.id,
+      resource_id: id,
       details: { product_name: product?.name },
       ip_address: request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip"),
     });
