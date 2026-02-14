@@ -25,9 +25,11 @@ interface ProductFormData {
   seo_description: string;
 }
 
-export default function ProductEditPage({ params }: { params: { id: string } }) {
+export default function ProductEditPage() {
   const router = useRouter();
-  const isNew = params.id === "new";
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+  const id = pathname.split('/').pop() || '';
+  const isNew = id === "new";
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<ProductFormData>({
@@ -51,11 +53,11 @@ export default function ProductEditPage({ params }: { params: { id: string } }) 
     if (!isNew) {
       fetchProduct();
     }
-  }, [params.id]);
+  }, [id]);
 
   const fetchProduct = async () => {
     try {
-      const response = await fetch(`/api/admin/products/${params.id}`);
+      const response = await fetch(`/api/admin/products/${id}`);
       const data = await response.json();
 
       if (response.ok) {

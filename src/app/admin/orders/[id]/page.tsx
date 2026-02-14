@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Save, Package, User, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,10 @@ interface Order {
   items: OrderItem[];
 }
 
-export default function OrderDetailPage({ params }: { params: { id: string } }) {
+export default function OrderDetailPage() {
+  const router = useRouter();
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+  const id = pathname.split('/').pop() || '';
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -47,12 +50,14 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
-    fetchOrder();
-  }, [params.id]);
+    if (id) {
+      fetchOrder();
+    }
+  }, [id]);
 
   const fetchOrder = async () => {
     try {
-      const response = await fetch(`/api/admin/orders/${params.id}`);
+      const response = await fetch(`/api/admin/orders/${id}`);
       const data = await response.json();
 
       if (response.ok) {
@@ -73,7 +78,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
     setSaving(true);
 
     try {
-      const response = await fetch(`/api/admin/orders/${params.id}`, {
+      const response = await fetch(`/api/admin/orders/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
